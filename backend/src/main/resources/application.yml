@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/smarthire
+    username: smarthire
+    password: smarthire123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: default
+
+app:
+  jwt:
+    secret: smarthire-super-secret-jwt-key-minimum-32-chars-2024
+    expiration-ms: 86400000
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: smarthire-postgres
+    environment:
+      POSTGRES_USER: smarthire
+      POSTGRES_PASSWORD: smarthire123
+      POSTGRES_DB: smarthire
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - smarthire-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: smarthire-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/smarthire
+      SPRING_DATASOURCE_USERNAME: smarthire
+      SPRING_DATASOURCE_PASSWORD: smarthire123
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - postgres
+    networks:
+      - smarthire-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: smarthire-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - smarthire-network
+
+networks:
+  smarthire-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
